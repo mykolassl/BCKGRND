@@ -13,14 +13,14 @@
         android:theme="@style/Theme.BCKGRND"
         tools:targetApi="31">
         <activity
-            android:name=".SignInActivity"
-            android:exported="true">
+            android:name=".AuthActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".SignInActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
