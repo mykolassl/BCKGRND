@@ -21,6 +21,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         Log.i("MESSAGE", "Welcome created")
 
         val btnContinueLogin = view.findViewById<Button>(R.id.btnContinueLogin)
+        val btnGetStarted = view.findViewById<Button>(R.id.btnGetStarted)
 
         // Transition between fragments
         val inflater = TransitionInflater.from(requireContext())
@@ -30,14 +31,27 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         ViewCompat.setTransitionName(ivCamera, "ivCamera")
 
         btnContinueLogin.setOnClickListener {
-            Log.i("MESSAGE", "Btn clicked")
-
             if(savedInstanceState == null) {
                 parentFragmentManager.commit {
                     val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
                     detach(fragment)
 
                     replace<SignInFragment>(R.id.fragment_sign_in_view)
+                    setReorderingAllowed(true)
+                    addToBackStack("com.example.bckgrnd.WelcomeFragment")
+
+                    addSharedElement(ivCamera, "ivCamera")
+                }
+            }
+        }
+
+        btnGetStarted.setOnClickListener {
+            if(savedInstanceState == null) {
+                parentFragmentManager.commit {
+                    val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
+                    detach(fragment)
+
+                    replace<SignUpFragment>(R.id.fragment_sign_up_view)
                     setReorderingAllowed(true)
                     addToBackStack("com.example.bckgrnd.WelcomeFragment")
 

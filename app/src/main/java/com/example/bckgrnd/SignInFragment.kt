@@ -50,7 +50,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         // TODO fix shared image animations
         val ivCamera = view.findViewById<ImageView>(R.id.ivCamera)
         ViewCompat.setTransitionName(ivCamera, "ivCamera")
-        sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.shared_image)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(R.transition.shared_image)
     }
 
     override fun onPause() {
