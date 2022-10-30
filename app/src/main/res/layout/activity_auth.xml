@@ -8,6 +8,11 @@
     android:background="@drawable/app_background">
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_sign_up_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_sign_in_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
