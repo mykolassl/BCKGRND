@@ -39,7 +39,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         text.setSpan(link, 12, 29, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         val tvCreateAcc = view.findViewById<TextView>(R.id.tvCreateAcc)
-        tvCreateAcc.setText(text)
+        tvCreateAcc.text = text
         tvCreateAcc.movementMethod = LinkMovementMethod.getInstance()
 
         // Transition between fragments
