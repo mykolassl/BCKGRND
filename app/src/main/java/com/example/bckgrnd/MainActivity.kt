@@ -1,15 +1,16 @@
 package com.example.bckgrnd
 
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
+import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.MapView
+import com.esri.arcgisruntime.tasks.geocode.GeocodeParameters
+import com.esri.arcgisruntime.tasks.geocode.LocatorTask
 
 import com.example.bckgrnd.databinding.ActivityMainBinding
 
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupMap() {
-        val map = ArcGISMap(BasemapStyle.ARCGIS_STREETS_NIGHT)
+        val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC)
         mapView.map = map
         mapView.setViewpoint(Viewpoint(54.687157, 25.279652, 72000.0))
     }
@@ -35,20 +36,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //setApiKeyForApp()
-        //setupMap()
+        setApiKeyForApp()
+        setupMap()
 
         setContentView(activityMainBinding.root)
         //setContentView(R.layout.activity_main)
-
-        activityMainBinding.btnPlaces.setOnClickListener {
-            Log.i("MESSAGE", "Places button clicked")
-        }
     }
 
     override fun onPause() {
-        mapView.pause()
         super.onPause()
+        mapView.pause()
     }
 
     override fun onResume() {
@@ -57,8 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        mapView.dispose()
         super.onDestroy()
+        mapView.dispose()
     }
-
 }

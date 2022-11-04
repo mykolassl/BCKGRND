@@ -3,7 +3,6 @@ package com.example.bckgrnd
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 

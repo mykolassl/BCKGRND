@@ -106,8 +106,9 @@
         android:id="@+id/ivCamera"
         android:layout_width="255dp"
         android:layout_height="228dp"
-        android:background="@drawable/camera"
+        android:transitionName="ivCamera_mid"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

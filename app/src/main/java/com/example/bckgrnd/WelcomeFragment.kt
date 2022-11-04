@@ -4,13 +4,9 @@ import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 
@@ -23,24 +19,18 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         val btnContinueLogin = view.findViewById<Button>(R.id.btnContinueLogin)
         val btnGetStarted = view.findViewById<Button>(R.id.btnGetStarted)
 
-        // Transition between fragments
-        val inflater = TransitionInflater.from(requireContext())
-        exitTransition = inflater.inflateTransition(R.transition.slide_left)
-
-        val ivCamera = view.findViewById<ImageView>(R.id.ivCamera)
-        ViewCompat.setTransitionName(ivCamera, "ivCamera")
-
         btnContinueLogin.setOnClickListener {
             if(savedInstanceState == null) {
                 parentFragmentManager.commit {
-                    val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
-                    detach(fragment)
+                    //val ivCamera = view.findViewById<ImageView>(R.id.ivCamera)
+                    //addSharedElement(ivCamera, "ivCamera_start")
 
                     replace<SignInFragment>(R.id.fragment_sign_in_view)
                     setReorderingAllowed(true)
                     addToBackStack("com.example.bckgrnd.WelcomeFragment")
 
-                    addSharedElement(ivCamera, "ivCamera")
+                    val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
+                    detach(fragment)
                 }
             }
         }
@@ -48,16 +38,18 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
         btnGetStarted.setOnClickListener {
             if(savedInstanceState == null) {
                 parentFragmentManager.commit {
-                    val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
-                    detach(fragment)
-
                     replace<SignUpFragment>(R.id.fragment_sign_up_view)
                     setReorderingAllowed(true)
                     addToBackStack("com.example.bckgrnd.WelcomeFragment")
 
-                    addSharedElement(ivCamera, "ivCamera")
+                    val fragment = parentFragmentManager.findFragmentById(R.id.fragment_welcome_view) as WelcomeFragment
+                    detach(fragment)
                 }
             }
         }
+
+        // Transition between fragments
+        val inflater = TransitionInflater.from(requireContext())
+        exitTransition = inflater.inflateTransition(R.transition.slide_left)
     }
 }

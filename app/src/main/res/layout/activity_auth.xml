@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AuthActivity"
-    android:background="@drawable/app_background">
+    android:background="@drawable/app_background"
+    tools:context=".AuthActivity" >
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_sign_up_view"

@@ -22,11 +22,12 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="15dp"
-            android:background="@drawable/iconsearch"
             android:contentDescription="search icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/etSearch"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/iconsearch" />
+
 
         <EditText
             android:id="@+id/etSearch"
@@ -39,7 +40,7 @@
             android:hint="Search"
             android:inputType="text"
             android:paddingHorizontal="45dp"
-            android:paddingVertical="12dp"
+            android:paddingVertical="15dp"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="15sp"
@@ -52,10 +53,10 @@
             android:id="@+id/imageView2"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/iconburger"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/iconburger" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

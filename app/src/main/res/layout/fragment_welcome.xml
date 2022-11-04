@@ -70,7 +70,7 @@
         android:id="@+id/ivCamera"
         android:layout_width="260dp"
         android:layout_height="231dp"
-        android:contentDescription="@null"
+        android:transitionName="ivCamera_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/camera" />
