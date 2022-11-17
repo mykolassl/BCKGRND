@@ -3,9 +3,7 @@ package com.example.bckgrnd
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
@@ -17,12 +15,11 @@ import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
-import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
+import com.esri.arcgisruntime.symbology.TextSymbol
 import com.example.bckgrnd.databinding.ActivityMainBinding
 
 class MyTouchListener(context: Context, mapView: MapView) : DefaultMapViewOnTouchListener(context, mapView) {
-
     private val m = mapView
     private val ctx = context
 
@@ -38,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    val mapView: MapView by lazy {
+    private val mapView: MapView by lazy {
         activityMainBinding.mapView
     }
 
@@ -61,20 +58,37 @@ class MainActivity : AppCompatActivity() {
         mapView.setViewpoint(Viewpoint(envelope))
 
         val ls = MyTouchListener(this, mapView)
-        mapView.setOnTouchListener(ls)
+        mapView.onTouchListener = ls
+    }
+
+    private fun createPoint(xCoord: Double, yCoord: Double): Graphic {
+        val point = Point(xCoord, yCoord, SpatialReferences.getWgs84())
+        val symbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, -0xff9c01, 10f)
+        return Graphic(point, symbol)
+    }
+
+    private fun createPointText(xCoord: Double, yCoord: Double, text: String): Graphic {
+        val point = Point(xCoord, yCoord, SpatialReferences.getWgs84())
+        val symbol = TextSymbol(10f,
+            text,
+            -0xa8cd,
+            TextSymbol.HorizontalAlignment.CENTER,
+            TextSymbol.VerticalAlignment.BOTTOM)
+        return Graphic(point, symbol)
     }
 
     private fun addGraphics() {
         val graphicsOverlay = GraphicsOverlay()
         mapView.graphicsOverlays.add(graphicsOverlay)
 
-        val point = Point(25.241123, 54.660329, SpatialReferences.getWgs84())
-        val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xa8cd, 10f)
-        val blueOutlineSymbol = SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, -0xff9c01, 2f)
-        simpleMarkerSymbol.outline = blueOutlineSymbol
+        //val point = Point(25.241123, 54.660329, SpatialReferences.getWgs84())
+        //val marker = TextSymbol(10f, "Laba diena", -0xa8cd, TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.BOTTOM)
+        //val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xff9c01, 10f)
 
-        val pointGraphic = Graphic(point, simpleMarkerSymbol)
-        graphicsOverlay.graphics.add(pointGraphic)
+        //var pointGraphic = Graphic(point, simpleMarkerSymbol)
+        graphicsOverlay.graphics.add(createPoint(25.2884191, 54.6866518))
+        //pointGraphic = Graphic(point, marker)
+        graphicsOverlay.graphics.add(createPointText(25.2884191, 54.6866518, "Gedimino pokstas"))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
