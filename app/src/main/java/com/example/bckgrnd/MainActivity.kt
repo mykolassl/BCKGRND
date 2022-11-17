@@ -1,32 +1,44 @@
 package com.example.bckgrnd
 
-import android.graphics.Color
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
-import com.esri.arcgisruntime.mapping.labeling.LabelExpression
-import com.esri.arcgisruntime.mapping.labeling.SimpleLabelExpression
+import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
 import com.esri.arcgisruntime.mapping.view.Graphic
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
 import com.esri.arcgisruntime.mapping.view.MapView
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
-import com.esri.arcgisruntime.symbology.TextSymbol
 import com.example.bckgrnd.databinding.ActivityMainBinding
 
+class MyTouchListener(context: Context, mapView: MapView) : DefaultMapViewOnTouchListener(context, mapView) {
+
+    private val m = mapView
+    private val ctx = context
+
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        Toast.makeText(ctx, "${e.x} ${e.y}", Toast.LENGTH_SHORT).show()
+
+        return super.onSingleTapUp(e)
+    }
+}
 
 class MainActivity : AppCompatActivity() {
     private val activityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private val mapView: MapView by lazy {
+    val mapView: MapView by lazy {
         activityMainBinding.mapView
     }
 
@@ -38,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         ArcGISRuntimeEnvironment.setApiKey(getString(R.string.arcgis_api_key))
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
         val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC).apply {
             maxExtent = envelope
@@ -46,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
         mapView.map = map
         mapView.setViewpoint(Viewpoint(envelope))
+
+        val ls = MyTouchListener(this, mapView)
+        mapView.setOnTouchListener(ls)
     }
 
     private fun addGraphics() {
