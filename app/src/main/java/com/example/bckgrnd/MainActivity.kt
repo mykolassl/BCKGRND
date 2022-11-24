@@ -2,29 +2,75 @@ package com.example.bckgrnd
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Point
+import android.text.method.ScrollingMovementMethod
+import android.view.View
+import android.widget.TextView
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
+import com.esri.arcgisruntime.data.Feature
+import com.esri.arcgisruntime.data.ServiceFeatureTable
 import com.esri.arcgisruntime.geometry.*
+import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
-import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener
-import com.esri.arcgisruntime.mapping.view.Graphic
-import com.esri.arcgisruntime.mapping.view.GraphicsOverlay
-import com.esri.arcgisruntime.mapping.view.MapView
-import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
-import com.esri.arcgisruntime.symbology.TextSymbol
+import com.esri.arcgisruntime.mapping.view.*
 import com.example.bckgrnd.databinding.ActivityMainBinding
+import java.util.*
+import kotlin.math.roundToInt
+
 
 class MyTouchListener(context: Context, mapView: MapView) : DefaultMapViewOnTouchListener(context, mapView) {
     private val m = mapView
     private val ctx = context
+    private val mCallout = m.callout
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        Toast.makeText(ctx, "${e.x} ${e.y}", Toast.LENGTH_SHORT).show()
+        if(mCallout.isShowing) mCallout.dismiss()
+
+        val p = Point(e.x.roundToInt(), e.y.roundToInt())
+        val tolerance = 10.0
+
+        val identifyLayerResultListenableFuture = m.identifyLayerAsync(m.map.operationalLayers[0], p, tolerance, false, 1)
+        identifyLayerResultListenableFuture.addDoneListener {
+            try {
+                val identifyLayerResult = identifyLayerResultListenableFuture.get()
+
+                val calloutContent = TextView(ctx)
+                calloutContent.setTextColor(Color.BLACK)
+                calloutContent.isSingleLine = false
+                calloutContent.isVerticalScrollBarEnabled = true
+                calloutContent.scrollBarStyle = View.SCROLLBARS_INSIDE_INSET
+                calloutContent.movementMethod = ScrollingMovementMethod()
+                calloutContent.setLines(2)
+
+                for (element in identifyLayerResult.elements) {
+                    val feature = element as Feature
+                    val attr = feature.attributes
+                    val keys: Set<String> = attr.keys
+
+                    for (key in keys) {
+                        if(key != "name") continue
+
+                        val value = attr[key]
+                        calloutContent.append("$value")
+                    }
+
+                    val envelope = feature.geometry.extent
+                    mMapView.setViewpointGeometryAsync(envelope, 200.0)
+
+                    mCallout.location = envelope.center
+                    mCallout.content = calloutContent
+                    mCallout.show()
+                }
+            } catch(_: Exception) {
+
+            }
+        }
 
         return super.onSingleTapUp(e)
     }
@@ -49,46 +95,18 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
+        val featureLayer = FeatureLayer(ServiceFeatureTable("https://services8.arcgis.com/rP95XxeljMturhl8/arcgis/rest/services/response_1669309445062/FeatureServer/0"))
         val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC).apply {
             maxExtent = envelope
             minScale = 200000.0
+            operationalLayers.add(featureLayer)
         }
 
         mapView.map = map
         mapView.setViewpoint(Viewpoint(envelope))
 
-        val ls = MyTouchListener(this, mapView)
-        mapView.onTouchListener = ls
-    }
-
-    private fun createPoint(xCoord: Double, yCoord: Double): Graphic {
-        val point = Point(xCoord, yCoord, SpatialReferences.getWgs84())
-        val symbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.TRIANGLE, -0xff9c01, 10f)
-        return Graphic(point, symbol)
-    }
-
-    private fun createPointText(xCoord: Double, yCoord: Double, text: String): Graphic {
-        val point = Point(xCoord, yCoord, SpatialReferences.getWgs84())
-        val symbol = TextSymbol(10f,
-            text,
-            -0xa8cd,
-            TextSymbol.HorizontalAlignment.CENTER,
-            TextSymbol.VerticalAlignment.BOTTOM)
-        return Graphic(point, symbol)
-    }
-
-    private fun addGraphics() {
-        val graphicsOverlay = GraphicsOverlay()
-        mapView.graphicsOverlays.add(graphicsOverlay)
-
-        //val point = Point(25.241123, 54.660329, SpatialReferences.getWgs84())
-        //val marker = TextSymbol(10f, "Laba diena", -0xa8cd, TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.BOTTOM)
-        //val simpleMarkerSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, -0xff9c01, 10f)
-
-        //var pointGraphic = Graphic(point, simpleMarkerSymbol)
-        graphicsOverlay.graphics.add(createPoint(25.2884191, 54.6866518))
-        //pointGraphic = Graphic(point, marker)
-        graphicsOverlay.graphics.add(createPointText(25.2884191, 54.6866518, "Gedimino pokstas"))
+        val ts = MyTouchListener(this, mapView)
+        mapView.onTouchListener = ts
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +114,6 @@ class MainActivity : AppCompatActivity() {
 
         setApiKeyForApp()
         setupMap()
-        addGraphics()
 
         setContentView(activityMainBinding.root)
     }
@@ -115,4 +132,5 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         mapView.dispose()
     }
+
 }
