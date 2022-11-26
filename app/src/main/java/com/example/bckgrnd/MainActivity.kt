@@ -8,8 +8,14 @@ import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Point
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.ServiceFeatureTable
@@ -116,6 +122,12 @@ class MainActivity : AppCompatActivity() {
         setupMap()
 
         setContentView(activityMainBinding.root)
+        // Button click logic
+
+        val btnBurgerMenu = findViewById<ImageView>(R.id.ivBurger)
+        btnBurgerMenu.setOnClickListener {
+            Log.i("MESSAGE", "LOL")
+        }
     }
 
     override fun onPause() {

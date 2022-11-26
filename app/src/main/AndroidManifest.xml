@@ -6,8 +6,8 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
