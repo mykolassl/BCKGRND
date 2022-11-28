@@ -2,6 +2,7 @@ package com.example.bckgrnd
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
@@ -17,6 +18,7 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
+import com.esri.arcgisruntime.arcgisservices.LabelDefinition
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 import com.esri.arcgisruntime.geometry.*
@@ -24,7 +26,11 @@ import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
 import com.esri.arcgisruntime.mapping.Viewpoint
+import com.esri.arcgisruntime.mapping.labeling.ArcadeLabelExpression
 import com.esri.arcgisruntime.mapping.view.*
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
+import com.esri.arcgisruntime.symbology.SimpleRenderer
+import com.esri.arcgisruntime.symbology.TextSymbol
 import com.example.bckgrnd.databinding.ActivityMainBinding
 import java.util.*
 import kotlin.math.roundToInt
@@ -36,8 +42,6 @@ class MyTouchListener(context: Context, mapView: MapView) : DefaultMapViewOnTouc
     private val mCallout = m.callout
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        if(mCallout.isShowing) mCallout.dismiss()
-
         val p = Point(e.x.roundToInt(), e.y.roundToInt())
         val tolerance = 10.0
 
@@ -46,32 +50,20 @@ class MyTouchListener(context: Context, mapView: MapView) : DefaultMapViewOnTouc
             try {
                 val identifyLayerResult = identifyLayerResultListenableFuture.get()
 
-                val calloutContent = TextView(ctx)
-                calloutContent.setTextColor(Color.BLACK)
-                calloutContent.isSingleLine = false
-                calloutContent.isVerticalScrollBarEnabled = true
-                calloutContent.scrollBarStyle = View.SCROLLBARS_INSIDE_INSET
-                calloutContent.movementMethod = ScrollingMovementMethod()
-                calloutContent.setLines(2)
-
                 for (element in identifyLayerResult.elements) {
                     val feature = element as Feature
                     val attr = feature.attributes
                     val keys: Set<String> = attr.keys
+                    val intent = Intent(ctx, PlaceInformationActivity::class.java)
 
-                    for (key in keys) {
-                        if(key != "name") continue
-
-                        val value = attr[key]
-                        calloutContent.append("$value")
+                    for(key in keys) {
+                        intent.putExtra(key, attr[key].toString())
                     }
+
+                    ctx.startActivity(intent)
 
                     val envelope = feature.geometry.extent
                     mMapView.setViewpointGeometryAsync(envelope, 200.0)
-
-                    mCallout.location = envelope.center
-                    mCallout.content = calloutContent
-                    mCallout.show()
                 }
             } catch(_: Exception) {
 
@@ -102,6 +94,12 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
         val featureLayer = FeatureLayer(ServiceFeatureTable("https://services8.arcgis.com/rP95XxeljMturhl8/arcgis/rest/services/response_1669309445062/FeatureServer/0"))
+        val simpleSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 10f)
+
+        featureLayer.renderer = SimpleRenderer(simpleSymbol)
+        featureLayer.isLabelsEnabled = true
+        featureLayer.labelDefinitions.add(makeLabelDefinition("name"))
+
         val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC).apply {
             maxExtent = envelope
             minScale = 200000.0
@@ -122,12 +120,28 @@ class MainActivity : AppCompatActivity() {
         setupMap()
 
         setContentView(activityMainBinding.root)
-        // Button click logic
 
+        // Button click logic
         val btnBurgerMenu = findViewById<ImageView>(R.id.ivBurger)
         btnBurgerMenu.setOnClickListener {
             Log.i("MESSAGE", "LOL")
         }
+    }
+
+    private fun makeLabelDefinition(labelAttribute: String): LabelDefinition {
+        val labelTextSymbol = TextSymbol().apply {
+            color = Color.RED
+            size = 11.0f
+            haloColor = Color.WHITE
+            haloWidth = 0.5f
+            fontFamily = "Arial"
+            fontStyle = TextSymbol.FontStyle.ITALIC
+            fontWeight = TextSymbol.FontWeight.NORMAL
+        }
+
+        val labelExpression = ArcadeLabelExpression("\$feature.$labelAttribute")
+
+        return LabelDefinition(labelExpression, labelTextSymbol)
     }
 
     override fun onPause() {
