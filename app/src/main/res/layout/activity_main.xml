@@ -78,6 +78,7 @@
             android:fontFamily="serif"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+            android:textAllCaps="false"
             android:text="Places to\nvisit"
             android:textColor="@color/black"
             android:textSize="11sp"
@@ -96,6 +97,7 @@
             android:fontFamily="serif"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+            android:textAllCaps="false"
             android:text="Visited\nplaces"
             android:textColor="@color/black"
             android:textSize="11sp"
@@ -115,6 +117,7 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="Tourist\nattractions"
+            android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="11sp"
             app:cornerRadius="100dp"
@@ -156,4 +159,66 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewBurger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/view_burger_bg"
+        android:layout_margin="20dp"
+        android:padding="30dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Upload a photo"
+            android:backgroundTint="@color/light_gray"
+            android:textColor="@color/black"
+            app:cornerRadius="100dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="My profile"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/gray"
+            app:cornerRadius="100dp"
+            app:layout_constraintTop_toBottomOf="@id/btnUpload"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/btnSignOut"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="Sign out"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/orange"
+            app:cornerRadius="100dp"
+            app:layout_constraintTop_toBottomOf="@id/btnProfile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/ivCloseMenu"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignOut"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iconx"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
