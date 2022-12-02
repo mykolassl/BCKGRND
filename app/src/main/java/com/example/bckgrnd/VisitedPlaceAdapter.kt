@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class VisitedPlaceAdapter(
-    var visitedPlaces: List<VisitedPlace>
+    var visitedPlaces: List<Place>
 ): RecyclerView.Adapter<VisitedPlaceAdapter.PlaceViewHolder>() {
     inner class PlaceViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -19,13 +19,11 @@ class VisitedPlaceAdapter(
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         holder.itemView.apply {
             val tvPlaceName = findViewById<TextView>(R.id.btnVisitedPlace)
-            tvPlaceName.text = visitedPlaces[position].title
+            tvPlaceName.text = visitedPlaces[position].placeName
         }
     }
 
     override fun getItemCount(): Int {
         return visitedPlaces.size
     }
-
-
 }

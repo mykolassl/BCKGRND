@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
         val featureLayer = FeatureLayer(ServiceFeatureTable("https://services8.arcgis.com/rP95XxeljMturhl8/arcgis/rest/services/response_1669309445062/FeatureServer/0"))
-        val simpleSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 10f)
+        val simpleSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 5f)
 
         featureLayer.renderer = SimpleRenderer(simpleSymbol)
         featureLayer.isLabelsEnabled = true
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     private fun makeLabelDefinition(labelAttribute: String): LabelDefinition {
         val labelTextSymbol = TextSymbol().apply {
             color = Color.RED
-            size = 11.0f
+            size = 8.0f
             haloColor = Color.WHITE
             haloWidth = 0.5f
             fontFamily = "Arial"

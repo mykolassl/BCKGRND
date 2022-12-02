@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:fontFamily="serif"
         android:id="@+id/tvPlaceInfo"
         android:layout_width="match_parent"
         android:layout_height="0dp"

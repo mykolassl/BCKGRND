@@ -22,11 +22,6 @@ import java.io.StringReader
 //    var place: Place?
 //)
 
-data class Place(
-    var xid: String,
-    var placeName: String
-)
-
 class PlaceInformationActivity : AppCompatActivity() {
     lateinit var placeApi: IPlaceApi
     private lateinit var PLACE_XID: String
@@ -75,9 +70,7 @@ class PlaceInformationActivity : AppCompatActivity() {
 
         val ivSetVisited = findViewById<ImageView>(R.id.ivCheckmark)
         ivSetVisited.setOnClickListener {
-            val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
-
-            sharedPrefs?.getString("visitedPlacesJson", "")?.let { it1 -> Log.i("MESSAGE", it1) }
+            val sharedPrefs = applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)
 
             if(sharedPrefs.getString("visitedPlacesJson", "") != "") {
                 // Check if clicked place exists in the JSON string.
@@ -93,8 +86,6 @@ class PlaceInformationActivity : AppCompatActivity() {
                         isVisited = true
                     }
                 }
-
-                Log.i("MESSAGE", "BEFORE: ${sharedPrefs.getString("visitedPlacesJson", "")!!.trimIndent()}")
 
                 var updatedVisitedPlacesJSON: String = ""
 
@@ -114,10 +105,11 @@ class PlaceInformationActivity : AppCompatActivity() {
                         }
                     """.trimIndent()
 
-                with(sharedPrefs!!.edit()) {
-                    putString("visitedPlacesJson", updatedVisitedPlacesJSON)
-                    apply()
-                }
+                sharedPrefs.edit().putString("visitedPlacesJson", updatedVisitedPlacesJSON).commit()
+//                with(sharedPrefs!!.edit()) {
+//                    putString("visitedPlacesJson", updatedVisitedPlacesJSON)
+//                    apply()
+//                }
             } else {
                 val visitedPlacesJSON =
                     """
@@ -132,11 +124,15 @@ class PlaceInformationActivity : AppCompatActivity() {
                     }    
                     """.trimIndent()
 
-                with(sharedPrefs!!.edit()) {
-                    putString("visitedPlacesJson", visitedPlacesJSON)
-                    apply()
-                }
+                sharedPrefs.edit().putString("visitedPlacesJson", visitedPlacesJSON).commit()
+
+//                with(sharedPrefs!!.edit()) {
+//                    putString("visitedPlacesJson", visitedPlacesJSON)
+//                    apply()
+//                }
             }
+
+            Log.i("MESSAGE", "After checkmark click: \n${applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)}")
         }
     }
 }
