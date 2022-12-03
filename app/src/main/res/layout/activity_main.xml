@@ -167,7 +167,7 @@
         android:background="@drawable/view_burger_bg"
         android:layout_margin="20dp"
         android:padding="30dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -181,6 +181,7 @@
             android:backgroundTint="@color/light_gray"
             android:textColor="@color/black"
             app:cornerRadius="100dp"
+            app:rippleColor="@color/light_gray"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -195,6 +196,7 @@
             android:textColor="@color/black"
             android:backgroundTint="@color/gray"
             app:cornerRadius="100dp"
+            app:rippleColor="@color/light_gray"
             app:layout_constraintTop_toBottomOf="@id/btnUpload"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -209,6 +211,7 @@
             android:textColor="@color/black"
             android:backgroundTint="@color/orange"
             app:cornerRadius="100dp"
+            app:rippleColor="@color/light_orange"
             app:layout_constraintTop_toBottomOf="@id/btnProfile"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

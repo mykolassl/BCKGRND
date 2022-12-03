@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -106,10 +107,6 @@ class PlaceInformationActivity : AppCompatActivity() {
                     """.trimIndent()
 
                 sharedPrefs.edit().putString("visitedPlacesJson", updatedVisitedPlacesJSON).commit()
-//                with(sharedPrefs!!.edit()) {
-//                    putString("visitedPlacesJson", updatedVisitedPlacesJSON)
-//                    apply()
-//                }
             } else {
                 val visitedPlacesJSON =
                     """
@@ -125,14 +122,20 @@ class PlaceInformationActivity : AppCompatActivity() {
                     """.trimIndent()
 
                 sharedPrefs.edit().putString("visitedPlacesJson", visitedPlacesJSON).commit()
-
-//                with(sharedPrefs!!.edit()) {
-//                    putString("visitedPlacesJson", visitedPlacesJSON)
-//                    apply()
-//                }
             }
+        }
 
-            Log.i("MESSAGE", "After checkmark click: \n${applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)}")
+        val ivSavePlace = findViewById<ImageView>(R.id.ivHeart)
+        ivSavePlace.setOnClickListener {
+            if(ivSavePlace.tag == "Empty") {
+                ivSavePlace.tag = "Filled"
+                ivSavePlace.setImageResource(R.drawable.iconheartred)
+                Toast.makeText(this@PlaceInformationActivity, "Added to saved places.", Toast.LENGTH_SHORT).show()
+            } else if(ivSavePlace.tag == "Filled") {
+                ivSavePlace.tag = "Empty"
+                ivSavePlace.setImageResource(R.drawable.iconheart)
+                Toast.makeText(this@PlaceInformationActivity, "Removed from saved places.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

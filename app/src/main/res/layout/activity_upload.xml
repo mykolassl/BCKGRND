@@ -4,16 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VisitedPlacesActivity"
-    android:background="@drawable/app_background"
-    android:padding="20dp">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="30dp"
-        android:id="@+id/rvPlaces"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+    tools:context=".UploadActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

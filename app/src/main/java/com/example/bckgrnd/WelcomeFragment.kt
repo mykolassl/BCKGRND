@@ -14,7 +14,6 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i("MESSAGE", "Welcome created")
 
         val btnContinueLogin = view.findViewById<Button>(R.id.btnContinueLogin)
         val btnGetStarted = view.findViewById<Button>(R.id.btnGetStarted)

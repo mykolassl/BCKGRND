@@ -118,6 +118,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SignOutActivity::class.java))
         }
 
+        val btnProfile = findViewById<Button>(R.id.btnProfile)
+        btnProfile.setOnClickListener {
+            startActivity(Intent(this, UserProfileActivity::class.java))
+        }
+
+        val btnUpload = findViewById<Button>(R.id.btnUpload)
+        btnUpload.setOnClickListener {
+            startActivity(Intent(this, UploadActivity::class.java))
+        }
+
         val btnCloseMenu = findViewById<ImageView>(R.id.ivCloseMenu)
         btnCloseMenu.setOnClickListener {
             val menu = findViewById<ConstraintLayout>(R.id.viewBurger)

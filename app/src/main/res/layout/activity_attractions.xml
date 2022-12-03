@@ -9,6 +9,7 @@
     tools:context=".AttractionsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="30dp"
         android:id="@+id/rvAttractions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -18,12 +18,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:fontFamily="serif"
         android:id="@+id/tvPlaceInfo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="20dp"
         android:background="@drawable/tv_info_bg"
+        android:fontFamily="serif"
         android:padding="20dp"
         android:scrollbars="vertical"
         android:textColor="@color/black"
@@ -42,5 +42,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Mark place as visited" />
+
+    <ImageView
+        android:tag="Empty"
+        android:id="@+id/ivHeart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/tvPlaceInfo"
+        app:layout_constraintTop_toTopOf="@+id/tvPlaceInfo"
+        android:src="@drawable/iconheart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
