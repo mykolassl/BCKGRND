@@ -19,16 +19,11 @@ class VisitedPlacesActivity : AppCompatActivity() {
 
         val sharedPrefs = applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)
         val visitedPlacesJSON = sharedPrefs.getString("visitedPlacesJson", "")!!.trimIndent()
-        Log.i("MESSAGE", "Places:")
-        Log.i("MESSAGE", visitedPlacesJSON)
         val parsedPlaces = Klaxon().parseJsonObject(StringReader(visitedPlacesJSON))
         val placesArray = parsedPlaces.array<Place>("data")!!.let { Klaxon().parseFromJsonArray<Place>(it) }
 
-        Log.i("MESSAGE", "$placesArray")
-
-        val adapter = placesArray?.let { VisitedPlaceAdapter(it) }
+        val adapter = placesArray?.let { VisitedPlaceAdapter(it, this@VisitedPlacesActivity) }
         rvPlaces.adapter = adapter
         rvPlaces.layoutManager = LinearLayoutManager(this)
-
     }
 }

@@ -1,13 +1,17 @@
 package com.example.bckgrnd
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class VisitedPlaceAdapter(
-    var visitedPlaces: List<Place>
+    var visitedPlaces: List<Place>,
+    var ctx: Context
 ): RecyclerView.Adapter<VisitedPlaceAdapter.PlaceViewHolder>() {
     inner class PlaceViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -18,8 +22,13 @@ class VisitedPlaceAdapter(
 
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         holder.itemView.apply {
-            val tvPlaceName = findViewById<TextView>(R.id.btnVisitedPlace)
-            tvPlaceName.text = visitedPlaces[position].placeName
+            val btnPlaceName = findViewById<Button>(R.id.btnVisitedPlace)
+            btnPlaceName.text = visitedPlaces[position].placeName
+            btnPlaceName.setOnClickListener {
+                val intent = Intent(ctx, PlaceInformationActivity::class.java)
+                intent.putExtra("xid", visitedPlaces[position].xid)
+                ctx.startActivity(intent)
+            }
         }
     }
 
