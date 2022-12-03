@@ -24,7 +24,7 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedPrefs = getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPrefs = this.getSharedPreferences("isLogged", Context.MODE_PRIVATE) ?: return
         if(sharedPrefs.getBoolean("isLogged", false)) {
             startActivity(Intent(this@AuthActivity, MainActivity::class.java))
         }

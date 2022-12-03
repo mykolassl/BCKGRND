@@ -167,15 +167,16 @@
         android:background="@drawable/view_burger_bg"
         android:layout_margin="20dp"
         android:padding="30dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/btnUpload"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
+            android:letterSpacing="0.05"
             android:text="Upload a photo"
             android:backgroundTint="@color/light_gray"
             android:textColor="@color/black"
@@ -186,9 +187,10 @@
 
         <Button
             android:id="@+id/btnProfile"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
+            android:letterSpacing="0.05"
             android:text="My profile"
             android:textColor="@color/black"
             android:backgroundTint="@color/gray"
@@ -199,9 +201,10 @@
 
         <Button
             android:id="@+id/btnSignOut"
-            android:layout_width="150dp"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
+            android:letterSpacing="0.05"
             android:text="Sign out"
             android:textColor="@color/black"
             android:backgroundTint="@color/orange"

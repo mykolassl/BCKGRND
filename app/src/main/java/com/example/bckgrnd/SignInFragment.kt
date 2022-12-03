@@ -38,10 +38,10 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
         btnSignIn?.setOnClickListener {
             val user = tblUser(UserName = "Kostas Testulis", UserMail = etUserEmail.text.toString(), UserPass = etUserPassword.text.toString())
-            val sharedPrefs = activity?.getPreferences(Context.MODE_PRIVATE)
+            val sharedPrefs = activity?.getSharedPreferences("isLogged", Context.MODE_PRIVATE)
             with(sharedPrefs!!.edit()) {
                 putBoolean("isLogged", true)
-                apply()
+                commit()
             }
 
             compositeDisposable.addAll(iApi.loginUser(user)
@@ -54,8 +54,8 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                         Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
                     },
                     {t: Throwable ->
-                        Log.i("MESSAGE", t!!.message.toString())
-                        Toast.makeText(activity, t!!.message, Toast.LENGTH_LONG).show()
+                        Log.i("MESSAGE", t.message.toString())
+                        Toast.makeText(activity, t.message, Toast.LENGTH_LONG).show()
                     })
             )
         }

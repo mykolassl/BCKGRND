@@ -80,6 +80,8 @@
         android:fontFamily="serif"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
+        android:letterSpacing="0.05"
+        android:textAllCaps="false"
         android:text="Sign in"
         android:textColor="@color/black"
         app:cornerRadius="100dp"

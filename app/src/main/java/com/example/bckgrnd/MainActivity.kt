@@ -1,6 +1,7 @@
 package com.example.bckgrnd
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -106,10 +107,21 @@ class MainActivity : AppCompatActivity() {
             menu.visibility = View.VISIBLE
         }
 
+        val btnSignOut = findViewById<Button>(R.id.btnSignOut)
+        btnSignOut.setOnClickListener {
+            val preferences = this.getSharedPreferences("isLogged", Context.MODE_PRIVATE)
+            with(preferences.edit()) {
+                putBoolean("isLogged", false)
+                commit()
+            }
+            this.finish()
+            startActivity(Intent(this, SignOutActivity::class.java))
+        }
+
         val btnCloseMenu = findViewById<ImageView>(R.id.ivCloseMenu)
         btnCloseMenu.setOnClickListener {
             val menu = findViewById<ConstraintLayout>(R.id.viewBurger)
-            menu.visibility = View.INVISIBLE
+            menu.visibility = View.GONE
         }
 
         // Navigation button click logic
