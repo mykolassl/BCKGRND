@@ -144,7 +144,7 @@
     <Button
         android:id="@+id/button6"
         android:layout_width="187dp"
-        android:layout_height="49dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#B3A692"
         android:text="Change password"

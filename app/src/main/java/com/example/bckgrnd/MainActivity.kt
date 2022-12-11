@@ -1,28 +1,24 @@
 package com.example.bckgrnd
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
-import android.graphics.Point
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayoutStates
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.arcgisservices.LabelDefinition
-import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.layers.FeatureLayer
@@ -36,7 +32,6 @@ import com.esri.arcgisruntime.symbology.SimpleRenderer
 import com.esri.arcgisruntime.symbology.TextSymbol
 import com.example.bckgrnd.databinding.ActivityMainBinding
 import java.util.*
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
     private val activityMainBinding by lazy {
@@ -45,6 +40,10 @@ class MainActivity : AppCompatActivity() {
 
     private val mapView: MapView by lazy {
         activityMainBinding.mapView
+    }
+
+    private val locationDisplay: LocationDisplay by lazy {
+        mapView.locationDisplay
     }
 
     private val envelope = Envelope(
@@ -71,7 +70,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         mapView.map = map
-        mapView.setViewpoint(Viewpoint(envelope))
+
+        locationDisplay.addDataSourceStatusChangedListener {
+            // if LocationDisplay isn't started or has an error
+            if (!it.isStarted && it.error != null) {
+                // check permissions to see if failure may be due to lack of permissions
+                requestPermissions(it)
+            }
+        }
+
+        locationDisplay.autoPanMode = LocationDisplay.AutoPanMode.RECENTER
+        locationDisplay.startAsync()
+
+        //mapView.setViewpoint(Viewpoint(envelope))
 
         val listener = PlaceTouchListener(this, mapView)
         mapView.onTouchListener = listener
@@ -90,6 +101,50 @@ class MainActivity : AppCompatActivity() {
         val labelExpression = ArcadeLabelExpression("\$feature.$labelAttribute")
 
         return LabelDefinition(labelExpression, labelTextSymbol)
+    }
+
+    private fun requestPermissions(dataSourceStatusChangedEvent: LocationDisplay.DataSourceStatusChangedEvent) {
+        val requestCode = 2
+        val reqPermissions = arrayOf(
+            ACCESS_FINE_LOCATION,
+            ACCESS_COARSE_LOCATION
+        )
+        // fine location permission
+        val permissionCheckFineLocation =
+            ContextCompat.checkSelfPermission(this@MainActivity, reqPermissions[0]) ==
+                    PackageManager.PERMISSION_GRANTED
+        // coarse location permission
+        val permissionCheckCoarseLocation =
+            ContextCompat.checkSelfPermission(this@MainActivity, reqPermissions[1]) ==
+                    PackageManager.PERMISSION_GRANTED
+        if (!(permissionCheckFineLocation && permissionCheckCoarseLocation)) { // if permissions are not already granted, request permission from the user
+            ActivityCompat.requestPermissions(this@MainActivity, reqPermissions, requestCode)
+        } else {
+            val message = String.format(
+                "Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
+                    .source.locationDataSource.error.message
+            )
+            Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // if request is cancelled, the results array is empty
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            locationDisplay.startAsync()
+        } else {
+            Toast.makeText(
+                this@MainActivity,
+                "Couldn't identify your location",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
