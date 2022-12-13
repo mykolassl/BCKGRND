@@ -49,7 +49,7 @@
         android:id="@+id/etLocationName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/et_border"
         android:hint="Name of the location"
         android:inputType="textMultiLine"
@@ -59,6 +59,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:textSize="12sp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/et_border"
+        android:hint="A short description of this place"
+        android:inputType="textMultiLine"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etLocationName" />
 
     <EditText
         android:textSize="12sp"
@@ -74,7 +90,23 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLocationName" />
+        app:layout_constraintTop_toBottomOf="@+id/etDescription" />
+
+    <EditText
+        android:textSize="12sp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/etTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/et_border"
+        android:hint="Tags (optional)"
+        android:inputType="textMultiLine"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etCoordinates" />
 
     <Button
         android:layout_marginTop="20dp"
@@ -92,7 +124,7 @@
         app:cornerRadius="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCoordinates"
+        app:layout_constraintTop_toBottomOf="@+id/etTags"
         app:rippleColor="@color/light_orange" />
 
 

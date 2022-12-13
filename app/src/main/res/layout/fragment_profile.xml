@@ -57,10 +57,10 @@
         app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvUserFirstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MICIUS"
+        android:text=""
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -75,14 +75,14 @@
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintStart_toStartOf="@+id/tvUserFirstName"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserFirstName" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvUserLastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CAT"
+        android:text=""
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName2"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
@@ -97,13 +97,14 @@
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintStart_toStartOf="@+id/tvUserLastName"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserLastName" />
 
     <TextView
+        android:id="@+id/tvUserMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="email@email.com"
+        android:text=""
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />

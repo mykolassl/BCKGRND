@@ -48,38 +48,57 @@ class UploadActivity : AppCompatActivity() {
         val btnSubmit = findViewById<Button>(R.id.btnSubmit)
         btnSubmit.setOnClickListener {
             val name = findViewById<EditText>(R.id.etLocationName).text.toString()
+            val description = findViewById<EditText>(R.id.etDescription).text.toString()
             val coordinates = findViewById<EditText>(R.id.etCoordinates).text.split(" ")
+            val tagNames = findViewById<EditText>(R.id.etTags).text.split(" ")
+            val tags = mutableListOf<Tag>()
+
+            for (n in tagNames) {
+                tags += Tag(n)
+            }
+
             val photo = Photo(pickedPhotoBase64)
 
-            if(name.isNotEmpty() && areCoordinatesValid(coordinates)) {
-                try {
-                    val location = tblLocation(
-                        name,
-                        "AAAA",
-                        coordinates[0].toFloat(),
-                        coordinates[1].toFloat(),
-                        listOf(Tag("History")),
-                        listOf(photo))
-
-                    compositeDisposable.addAll(iApi.addLocation(location)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            {s ->
-                                this@UploadActivity.finish()
-                                Toast.makeText(this@UploadActivity, s, Toast.LENGTH_SHORT).show()
-                            },
-                            {t: Throwable ->
-                                Log.i("MESSAGE", t.message.toString())
-                                Toast.makeText(this@UploadActivity, t.message, Toast.LENGTH_LONG).show()
-                            })
-                    )
-                } catch(_: Exception) {
-
-                }
-            } else {
-                Toast.makeText(this@UploadActivity, "Invalid coordinates or empty name field", Toast.LENGTH_SHORT).show()
+            if (name == "") {
+                Toast.makeText(this@UploadActivity, "Please provide a place name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (description == "") {
+                Toast.makeText(this@UploadActivity, "Please provide a short description for this place", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (!areCoordinatesValid(coordinates)) {
+                Toast.makeText(this@UploadActivity, "Please provide valid coordinates", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (photo.image == null) {
+                Toast.makeText(this@UploadActivity, "Please provide a photo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            try {
+                val location = tblLocation(
+                    name,
+                    description,
+                    coordinates[0].toFloat(),
+                    coordinates[1].toFloat(),
+                    tags,
+                    listOf(photo))
+
+                compositeDisposable.addAll(iApi.addLocation(location)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {s ->
+                            this@UploadActivity.finish()
+                            Toast.makeText(this@UploadActivity, s, Toast.LENGTH_SHORT).show()
+                        },
+                        {t: Throwable ->
+                            Log.i("MESSAGE", t.message.toString())
+                            Toast.makeText(this@UploadActivity, t.message, Toast.LENGTH_LONG).show()
+                        })
+                )
+            } catch(_: Exception) {
+
+            }
+
         }
     }
 

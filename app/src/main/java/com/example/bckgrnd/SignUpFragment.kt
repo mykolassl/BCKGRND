@@ -32,16 +32,27 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         val etUserLastName = view.findViewById<EditText>(R.id.etLastName)
         val etUserEmail = view.findViewById<EditText>(R.id.etEmail)
         val etUserPassword = view.findViewById<EditText>(R.id.etPassword)
+
         iApi = RetroFitClient.getInstance().create(IApi::class.java)
 
         btnSignUp?.setOnClickListener {
-            val user = tblUser(UserName= "${etUserFirstName.text} ${etUserLastName.text}", UserMail = etUserEmail.text.toString(), UserPass = etUserPassword.text.toString())
+            val userName = "${etUserFirstName.text} ${etUserLastName.text}"
+            val userMail = etUserEmail.text.toString()
+            val userPass = etUserPassword.text.toString()
+            val user = tblUser(UserName= userName, UserMail = userMail, UserPass = userPass)
             compositeDisposable.addAll(iApi.registerUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({s ->
                     if(s.contains("successfully")) {
                         activity?.finish()
+                    }
+
+                    val sharedPreferences = requireActivity().applicationContext.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+                    with(sharedPreferences.edit()) {
+                        putString("userName", userName)
+                        putString("userMail", userMail)
+                        commit()
                     }
 
                     Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
