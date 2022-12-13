@@ -1,6 +1,7 @@
 package com.example.bckgrnd
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -49,9 +50,9 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {s ->
-                        Log.i("MESSAGE", "Sign in clicked")
-
+                        activity?.finish()
                         Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(activity, MainActivity::class.java))
                     },
                     {t: Throwable ->
                         Log.i("MESSAGE", t.message.toString())

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.bckgrnd.Model.Photo
+import com.example.bckgrnd.Model.Tag
 import com.example.bckgrnd.Model.tblLocation
 import com.example.bckgrnd.Remote.IApi
 import com.example.bckgrnd.Remote.RetroFitClient
@@ -48,7 +49,7 @@ class UploadActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             val name = findViewById<EditText>(R.id.etLocationName).text.toString()
             val coordinates = findViewById<EditText>(R.id.etCoordinates).text.split(" ")
-            val photo = Photo(pickedPhotoBase64, "ABC")
+            val photo = Photo(pickedPhotoBase64)
 
             if(name.isNotEmpty() && areCoordinatesValid(coordinates)) {
                 try {
@@ -57,7 +58,7 @@ class UploadActivity : AppCompatActivity() {
                         "AAAA",
                         coordinates[0].toFloat(),
                         coordinates[1].toFloat(),
-                        emptyList(),
+                        listOf(Tag("History")),
                         listOf(photo))
 
                     compositeDisposable.addAll(iApi.addLocation(location)
@@ -65,6 +66,7 @@ class UploadActivity : AppCompatActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                             {s ->
+                                this@UploadActivity.finish()
                                 Toast.makeText(this@UploadActivity, s, Toast.LENGTH_SHORT).show()
                             },
                             {t: Throwable ->
@@ -72,9 +74,6 @@ class UploadActivity : AppCompatActivity() {
                                 Toast.makeText(this@UploadActivity, t.message, Toast.LENGTH_LONG).show()
                             })
                     )
-
-                    Toast.makeText(this@UploadActivity, "Photo uploaded successfully for review", Toast.LENGTH_SHORT).show()
-                    this@UploadActivity.finish()
                 } catch(_: Exception) {
 
                 }
