@@ -1,12 +1,12 @@
 package com.example.bckgrnd.Remote
 
+import com.beust.klaxon.JsonArray
 import com.example.bckgrnd.Model.tblLocation
+import com.example.bckgrnd.Model.tblLocationResponse
 import com.example.bckgrnd.Model.tblUser
 import io.reactivex.rxjava3.core.Observable
-import retrofit2.http.Body
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.Call
+import retrofit2.http.*
 
 interface IApi {
     @Headers("Connection: close")
@@ -20,4 +20,7 @@ interface IApi {
     @Headers("Connection: close")
     @POST("api/Location")
     fun addLocation(@Body location: tblLocation): Observable<String>
+
+    @GET("api/Location/{requestString}")
+    fun getPlaceInfo(@Path("requestString") requestString: String): Call<Array<tblLocationResponse>>
 }

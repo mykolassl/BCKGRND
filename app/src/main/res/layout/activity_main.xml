@@ -70,16 +70,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
+<!--        <Button-->
+<!--            android:id="@+id/btnPlaces"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="@color/gray"-->
+<!--            android:fontFamily="serif"-->
+<!--            android:paddingTop="12dp"-->
+<!--            android:paddingBottom="12dp"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:text="Places to\nvisit"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="11sp"-->
+<!--            app:cornerRadius="100dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:rippleColor="@color/light_gray" />-->
+
         <Button
-            android:id="@+id/btnPlaces"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnVisited"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/gray"
             android:fontFamily="serif"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:textAllCaps="false"
-            android:text="Places to\nvisit"
+            android:text="Visited places"
             android:textColor="@color/black"
             android:textSize="11sp"
             app:cornerRadius="100dp"
@@ -89,34 +108,14 @@
             app:rippleColor="@color/light_gray" />
 
         <Button
-            android:id="@+id/btnVisited"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:backgroundTint="@color/gray"
-            android:fontFamily="serif"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:textAllCaps="false"
-            android:text="Visited\nplaces"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            app:cornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnAttractions"
-            app:layout_constraintStart_toEndOf="@id/btnPlaces"
-            app:layout_constraintTop_toTopOf="parent"
-            app:rippleColor="@color/light_gray" />
-
-        <Button
             android:id="@+id/btnAttractions"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray"
             android:fontFamily="serif"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
-            android:text="Tourist\nattractions"
+            android:text="Tourist attractions"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="11sp"

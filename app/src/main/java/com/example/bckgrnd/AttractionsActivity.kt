@@ -38,7 +38,7 @@ class AttractionsActivity : AppCompatActivity() {
         featuresArray!!.forEach { e ->
             placesArray += Place(e.xid, e.name)
         }
-        val adapter = placesArray.let { VisitedPlaceAdapter(it, this@AttractionsActivity) }
+        val adapter = VisitedPlaceAdapter(placesArray, this@AttractionsActivity)
         rvAttractions.adapter = adapter
         rvAttractions.layoutManager = LinearLayoutManager(this)
     }

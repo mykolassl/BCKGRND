@@ -3,20 +3,19 @@ package com.example.bckgrnd
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.beust.klaxon.Klaxon
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.arcgisservices.LabelDefinition
 import com.esri.arcgisruntime.data.ServiceFeatureTable
@@ -24,14 +23,16 @@ import com.esri.arcgisruntime.geometry.*
 import com.esri.arcgisruntime.layers.FeatureLayer
 import com.esri.arcgisruntime.mapping.ArcGISMap
 import com.esri.arcgisruntime.mapping.BasemapStyle
-import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.labeling.ArcadeLabelExpression
 import com.esri.arcgisruntime.mapping.view.*
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 import com.esri.arcgisruntime.symbology.SimpleRenderer
 import com.esri.arcgisruntime.symbology.TextSymbol
+import com.example.bckgrnd.AllPlaces.AllPlaces
 import com.example.bckgrnd.databinding.ActivityMainBinding
+import java.io.StringReader
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private val activityMainBinding by lazy {
@@ -144,7 +145,38 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
 
+    private fun EditText.onSubmit(func: () -> Unit) {
+        setOnEditorActionListener { _, actionId, _ ->
+            Log.i("MESSAGE", actionId.toString())
+            if (actionId == 6) func()
+            true
+        }
+    }
+
+    private fun searchPlaces(text: String) {
+        val allPlacesJSON = AllPlaces().getPlaces()
+        val parsed = Klaxon().parseJsonObject(StringReader(allPlacesJSON))
+        val featuresArray = parsed
+            .array<Any>("features")!!
+            .obj("properties")
+            .let {
+                Klaxon().parseFromJsonArray<Properties>(it)
+            }
+        val placesXIDs = mutableListOf<String>()
+        val placesNames = mutableListOf<String>()
+        featuresArray?.forEach { e ->
+            if (e.name.contains(text)) {
+                placesXIDs += e.xid
+                placesNames += e.name
+                Log.i("MESSAGE", e.name)
+            }
+        }
+//        val intent = Intent(this@MainActivity, SearchActivity::class.java)
+//        intent.putExtra("placeNames", Klaxon().toJsonString(placesNames))
+//        intent.putExtra("placeXIDs", Klaxon().toJsonString(placesXIDs))
+//        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,6 +187,15 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(activityMainBinding.root)
 
+        // Search text field logic
+        val etSearch = findViewById<EditText>(R.id.etSearch)
+        etSearch.onSubmit {
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            intent.putExtra("searchQuery", etSearch.text.toString())
+            startActivity(intent)
+//            searchPlaces(etSearch.text.toString())
+        }
+
         // Menu button click logic
         val btnBurgerMenu = findViewById<ImageView>(R.id.ivBurger)
         btnBurgerMenu.setOnClickListener {
@@ -164,7 +205,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnSignOut = findViewById<Button>(R.id.btnSignOut)
         btnSignOut.setOnClickListener {
-            val preferences = this.getSharedPreferences("isLogged", Context.MODE_PRIVATE)
+            val preferences = this.getSharedPreferences("isLogged", MODE_PRIVATE)
             with(preferences.edit()) {
                 putBoolean("isLogged", false)
                 commit()
@@ -190,10 +231,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Navigation button click logic
-        val btnPlacesToVisit = findViewById<Button>(R.id.btnPlaces)
-        btnPlacesToVisit.setOnClickListener {
-            startActivity(Intent(this@MainActivity, PlacesActivity::class.java))
-        }
+//        val btnPlacesToVisit = findViewById<Button>(R.id.btnPlaces)
+//        btnPlacesToVisit.setOnClickListener {
+//            startActivity(Intent(this@MainActivity, PlacesActivity::class.java))
+//        }
 
         val btnVisitedPlaces = findViewById<Button>(R.id.btnVisited)
         btnVisitedPlaces.setOnClickListener {
