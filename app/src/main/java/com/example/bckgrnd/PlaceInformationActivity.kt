@@ -77,20 +77,19 @@ class PlaceInformationActivity : AppCompatActivity() {
                 }
             })
         } else {
-            // BLogai, taisyt parsinima nes gaunam json array!!!!!!!!!
             dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
                 override fun onResponse(call: Call<Array<tblLocationResponse>>, response: Response<Array<tblLocationResponse>>) {
                     val res = Klaxon().toJsonString(response.body()).trimIndent()
-                    val parsedResponse = Klaxon().parseJsonObject(StringReader(res))
+                    val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))
 
-                    PLACE_NAME = parsedResponse.string("Name") ?: ""
+                    PLACE_NAME = parsedResponse?.get(0)?.Name ?: ""
 
-                    val placeText = parsedResponse.string("Description")
+                    val placeText = parsedResponse?.get(0)?.Description
                     val tvPlaceInfo = findViewById<TextView>(R.id.tvPlaceInfo)
                     tvPlaceInfo.movementMethod = ScrollingMovementMethod()
                     tvPlaceInfo.text = placeText ?: "Oops, couldn't find any information about this place."
 
-                    val base64String = parsedResponse.array<Photo>("Photos")?.get(0)?.image
+                    val base64String = parsedResponse?.get(0)?.Photos?.get(0)?.Image
                     val iv = findViewById<ImageView>(R.id.ivPlace)
                     val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -116,7 +115,7 @@ class PlaceInformationActivity : AppCompatActivity() {
                 val placesArray = parsedPlaces.array<Place>("data")!!.let { Klaxon().parseFromJsonArray<Place>(it) }
                     ?.toMutableList()
 
-                var isVisited: Boolean = false
+                var isVisited = false
                 placesArray!!.forEach { e ->
                     if (e.placeName == PLACE_NAME) {
                         isVisited = true

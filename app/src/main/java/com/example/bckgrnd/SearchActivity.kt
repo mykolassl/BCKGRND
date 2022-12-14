@@ -38,7 +38,6 @@ class SearchActivity : AppCompatActivity() {
             if (e.name.contains(query!!)) {
                 placesXIDs += e.xid
                 placesNames += e.name
-                Log.i("MESSAGE", e.name)
             }
         }
 
@@ -46,12 +45,10 @@ class SearchActivity : AppCompatActivity() {
         val dbRequest = iApi.getPlaceInfo("name $query")
         dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
             override fun onResponse(call: Call<Array<tblLocationResponse>>, response: Response<Array<tblLocationResponse>>) {
-                Log.i("MESSAGE", response.toString())
                 val res = Klaxon().toJsonString(response.body()).trimIndent()
-                Log.i("MESSAGE", res)
                 val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))
-                Log.i("MESSAGE", parsedResponse.toString())
                 parsedResponse?.forEach {
+                    it.Name?.let { it1 -> Log.i("MESSAGE", it1) }
                     placesNames.add(it.Name!!)
                 }
             }
