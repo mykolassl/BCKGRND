@@ -25,7 +25,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i("MESSAGE", "Sign up created")
 
         val btnSignUp = view.findViewById<Button>(R.id.btnSignUp)
         val etUserFirstName = view.findViewById<EditText>(R.id.etFirstName)
@@ -57,7 +56,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
                     Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
                     startActivity(Intent(context, MainActivity::class.java))
-
                 },
                 {t: Throwable? ->
                     Toast.makeText(activity, t!!.message, Toast.LENGTH_SHORT).show()

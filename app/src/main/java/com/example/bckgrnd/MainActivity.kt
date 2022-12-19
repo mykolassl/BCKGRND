@@ -58,17 +58,27 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupMap() {
-        val featureLayer = FeatureLayer(ServiceFeatureTable("https://services8.arcgis.com/rP95XxeljMturhl8/arcgis/rest/services/response_1669309445062/FeatureServer/0"))
+        val featureLayer = FeatureLayer(ServiceFeatureTable(getString(R.string.feature_layer_url)))
+        val customFeatureLayer = FeatureLayer(ServiceFeatureTable(getString(R.string.custom_feature_layer_url)))
         val simpleSymbol = SimpleMarkerSymbol(SimpleMarkerSymbol.Style.DIAMOND, Color.RED, 5f)
 
-        featureLayer.renderer = SimpleRenderer(simpleSymbol)
-        featureLayer.isLabelsEnabled = true
-        featureLayer.labelDefinitions.add(makeLabelDefinition("name"))
+        featureLayer.apply {
+            renderer = SimpleRenderer(simpleSymbol)
+            isLabelsEnabled = true
+            labelDefinitions.add(makeLabelDefinition("name"))
+        }
+
+        customFeatureLayer.apply {
+            renderer = SimpleRenderer(simpleSymbol)
+            isLabelsEnabled = true
+            labelDefinitions.add(makeLabelDefinition("name"))
+        }
 
         val map = ArcGISMap(BasemapStyle.ARCGIS_TOPOGRAPHIC).apply {
             maxExtent = envelope
             minScale = 200000.0
             operationalLayers.add(featureLayer)
+            operationalLayers.add(customFeatureLayer)
         }
 
         mapView.map = map
@@ -83,8 +93,6 @@ class MainActivity : AppCompatActivity() {
 
         locationDisplay.autoPanMode = LocationDisplay.AutoPanMode.RECENTER
         locationDisplay.startAsync()
-
-        //mapView.setViewpoint(Viewpoint(envelope))
 
         val listener = PlaceTouchListener(this, mapView)
         mapView.onTouchListener = listener
@@ -121,12 +129,6 @@ class MainActivity : AppCompatActivity() {
                     PackageManager.PERMISSION_GRANTED
         if (!(permissionCheckFineLocation && permissionCheckCoarseLocation)) { // if permissions are not already granted, request permission from the user
             ActivityCompat.requestPermissions(this@MainActivity, reqPermissions, requestCode)
-        } else {
-            val message = String.format(
-                "Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
-                    .source.locationDataSource.error.message
-            )
-            Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -156,32 +158,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchPlaces(text: String) {
-        val allPlacesJSON = AllPlaces().getPlaces()
-        val parsed = Klaxon().parseJsonObject(StringReader(allPlacesJSON))
-        val featuresArray = parsed
-            .array<Any>("features")!!
-            .obj("properties")
-            .let {
-                Klaxon().parseFromJsonArray<Properties>(it)
-            }
-        val placesXIDs = mutableListOf<String>()
-        val placesNames = mutableListOf<String>()
-        featuresArray?.forEach { e ->
-            if (e.name.contains(text)) {
-                placesXIDs += e.xid
-                placesNames += e.name
-                Log.i("MESSAGE", e.name)
-            }
-        }
-//        val intent = Intent(this@MainActivity, SearchActivity::class.java)
-//        intent.putExtra("placeNames", Klaxon().toJsonString(placesNames))
-//        intent.putExtra("placeXIDs", Klaxon().toJsonString(placesXIDs))
-//        startActivity(intent)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ArcGISRuntimeEnvironment.setLicense(getString(R.string.l_key))
 
         setApiKeyForApp()
         setupMap()
@@ -194,7 +173,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
             intent.putExtra("searchQuery", etSearch.text.toString())
             startActivity(intent)
-//            searchPlaces(etSearch.text.toString())
         }
 
         // Menu button click logic
@@ -262,5 +240,4 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         mapView.dispose()
     }
-
 }

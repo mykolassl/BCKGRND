@@ -23,6 +23,7 @@ import com.example.bckgrnd.Remote.RetroFitClient
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlin.reflect.typeOf
 
 class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     lateinit var iApi: IApi
@@ -38,25 +39,32 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         iApi = RetroFitClient.getInstance().create(IApi::class.java)
 
         btnSignIn?.setOnClickListener {
-            val user = tblUser(UserName = "Kostas Testulis", UserMail = etUserEmail.text.toString(), UserPass = etUserPassword.text.toString())
-            val sharedPrefs = activity?.getSharedPreferences("isLogged", Context.MODE_PRIVATE)
-            with(sharedPrefs!!.edit()) {
-                putBoolean("isLogged", true)
-                commit()
-            }
+            val userReq = tblUser(UserMail = etUserEmail.text.toString(), UserPass = etUserPassword.text.toString())
 
-            compositeDisposable.addAll(iApi.loginUser(user)
+            compositeDisposable.addAll(iApi.loginUser(userReq)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {s ->
+                        val sharedPrefs = activity?.getSharedPreferences("isLogged", Context.MODE_PRIVATE)
+                        with(sharedPrefs!!.edit()) {
+                            putBoolean("isLogged", true)
+                            commit()
+                        }
+
+                        val sharedPreferences = requireActivity().applicationContext.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+                        with(sharedPreferences.edit()) {
+                            putString("userName", s.UserName)
+                            putString("userMail", s.UserMail)
+                            commit()
+                        }
+
                         activity?.finish()
-                        Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(activity, MainActivity::class.java))
                     },
                     {t: Throwable ->
-                        Log.i("MESSAGE", t.message.toString())
-                        Toast.makeText(activity, t.message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity, "Wrong email or password", Toast.LENGTH_LONG).show()
                     })
             )
         }

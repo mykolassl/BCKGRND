@@ -27,6 +27,7 @@ class PlaceInformationActivity : AppCompatActivity() {
     lateinit var iApi: IApi
     private lateinit var PLACE_XID: String
     private lateinit var PLACE_NAME: String
+    private lateinit var PLACE_DBID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +37,18 @@ class PlaceInformationActivity : AppCompatActivity() {
         val apiKey = getString(R.string.place_api_key)
 
         iApi = RetroFitClient.getInstance().create(IApi::class.java)
-        val dbRequest = iApi.getPlaceInfo("name ${intent.extras?.getString("name")}")
         placeApi = RetroFitPlaceClient.getInstance().create(IPlaceApi::class.java)
-        val infoRequest = placeApi.getInfo(intent.getStringExtra("xid") ?: "", apiKey)
+
         PLACE_XID = intent.getStringExtra("xid") ?: ""
+        PLACE_DBID = intent.getStringExtra("dbID") ?: ""
+
+        Log.i("MESSAGE", PLACE_XID)
 
         if (PLACE_XID != "-1") {
+            Log.i("MESSAGE", "Request to API")
+
+            val infoRequest = placeApi.getInfo(intent.getStringExtra("xid") ?: "", apiKey)
+
             infoRequest.enqueue(object : Callback<placeInfo> {
                 override fun onResponse(call: Call<placeInfo>, response: Response<placeInfo>) {
                     val res = Klaxon().toJsonString(response.body()).trimIndent()
@@ -77,19 +84,22 @@ class PlaceInformationActivity : AppCompatActivity() {
                 }
             })
         } else {
+            Log.i("MESSAGE", "Request to db")
+            val dbRequest = iApi.getPlaceInfo("id ${intent.extras?.getString("dbID")}")
+
             dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
                 override fun onResponse(call: Call<Array<tblLocationResponse>>, response: Response<Array<tblLocationResponse>>) {
                     val res = Klaxon().toJsonString(response.body()).trimIndent()
-                    val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))
+                    val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))?.get(0)
 
-                    PLACE_NAME = parsedResponse?.get(0)?.Name ?: ""
+                    PLACE_NAME = parsedResponse?.Name ?: ""
 
-                    val placeText = parsedResponse?.get(0)?.Description
+                    val placeText = parsedResponse?.Description
                     val tvPlaceInfo = findViewById<TextView>(R.id.tvPlaceInfo)
                     tvPlaceInfo.movementMethod = ScrollingMovementMethod()
                     tvPlaceInfo.text = placeText ?: "Oops, couldn't find any information about this place."
 
-                    val base64String = parsedResponse?.get(0)?.Photos?.get(0)?.Image
+                    val base64String = parsedResponse?.Photos?.get(0)?.Image
                     val iv = findViewById<ImageView>(R.id.ivPlace)
                     val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -108,13 +118,13 @@ class PlaceInformationActivity : AppCompatActivity() {
             val sharedPrefs = applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)
 
             if(sharedPrefs.getString("visitedPlacesJson", "") != "") {
-                // Check if clicked place exists in the JSON string.
-                // If exists remove it, else add it
+                // Check if clicked place exists in the JSON string. If exists remove it, else add it
                 val visitedPlacesJSON = sharedPrefs.getString("visitedPlacesJson", "")!!.trimIndent()
                 val parsedPlaces = Klaxon().parseJsonObject(StringReader(visitedPlacesJSON))
                 val placesArray = parsedPlaces.array<Place>("data")!!.let { Klaxon().parseFromJsonArray<Place>(it) }
                     ?.toMutableList()
 
+                // Check if name of the place exists in visited places JSON
                 var isVisited = false
                 placesArray!!.forEach { e ->
                     if (e.placeName == PLACE_NAME) {
@@ -122,19 +132,17 @@ class PlaceInformationActivity : AppCompatActivity() {
                     }
                 }
 
-                var updatedVisitedPlacesJSON: String = ""
-
                 if(isVisited) {
                     val foundPlaceObj = placesArray.find { e -> e.placeName == PLACE_NAME } as Place
                     placesArray -= foundPlaceObj
                     Toast.makeText(this, "$PLACE_NAME was removed from your visited places list.", Toast.LENGTH_LONG).show()
                 } else {
-                    val newPlace = Place(PLACE_XID, PLACE_NAME)
+                    val newPlace = Place(PLACE_XID, PLACE_NAME, if(PLACE_XID == "-1") PLACE_DBID else "")
                     placesArray += newPlace
                     Toast.makeText(this, "$PLACE_NAME was added to your visited places list.", Toast.LENGTH_LONG).show()
                 }
 
-                updatedVisitedPlacesJSON = """
+                val updatedVisitedPlacesJSON = """
                         {
                             "data": ${Klaxon().toJsonString(placesArray)}
                         }
@@ -142,18 +150,15 @@ class PlaceInformationActivity : AppCompatActivity() {
 
                 sharedPrefs.edit().putString("visitedPlacesJson", updatedVisitedPlacesJSON).commit()
             } else {
+                val newPlace = Place(PLACE_XID, PLACE_NAME, if(PLACE_XID == "-1") PLACE_DBID else "")
                 val visitedPlacesJSON =
                     """
                     {
-                        "data":
-                        [
-                            {
-                                "xid": "$PLACE_XID",
-                                "placeName": "$PLACE_NAME"
-                            }
-                        ]
+                        "data": [${Klaxon().toJsonObject(newPlace)}]
                     }    
                     """.trimIndent()
+
+                Log.i("MESSAGE", visitedPlacesJSON)
 
                 sharedPrefs.edit().putString("visitedPlacesJson", visitedPlacesJSON).commit()
             }

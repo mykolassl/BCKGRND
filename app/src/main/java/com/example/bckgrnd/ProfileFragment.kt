@@ -18,9 +18,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val tvUserLastName = view.findViewById<TextView>(R.id.tvUserLastName)
         val tvUserMail = view.findViewById<TextView>(R.id.tvUserMail)
 
-        tvUserFirstName.text = sharedPreferences.getString("userName", "")?.split(" ")?.get(0) ?: return
-        tvUserLastName.text = sharedPreferences.getString("userName", "")?.split(" ")?.get(1) ?: return
-        tvUserMail.text = sharedPreferences.getString("userMail", "")
+        try {
+            tvUserFirstName.text = sharedPreferences.getString("userName", "")?.split(" ")?.get(0) ?: ""
+            tvUserMail.text = sharedPreferences.getString("userMail", "")
+            tvUserLastName.text = sharedPreferences.getString("userName", "")?.split(" ")?.get(1) ?: ""
+        } catch (_: Exception) {
+
+        }
 
         val btnUpload = view.findViewById<Button>(R.id.button8)
         btnUpload.setOnClickListener {

@@ -27,6 +27,7 @@ class VisitedPlaceAdapter(
             btnPlaceName.setOnClickListener {
                 val intent = Intent(ctx, PlaceInformationActivity::class.java)
                 intent.putExtra("xid", visitedPlaces[position].xid)
+                intent.putExtra("dbID", visitedPlaces[position].dbID)
                 ctx.startActivity(intent)
             }
         }

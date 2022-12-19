@@ -15,7 +15,7 @@ interface IApi {
 
     @Headers("Connection: close")
     @POST("api/Login")
-    fun loginUser(@Body user: tblUser): Observable<String>
+    fun loginUser(@Body user: tblUser): Observable<tblUser>
 
     @Headers("Connection: close")
     @POST("api/Location")
