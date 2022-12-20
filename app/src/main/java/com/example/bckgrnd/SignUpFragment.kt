@@ -37,10 +37,25 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         iApi = RetroFitClient.getInstance().create(IApi::class.java)
 
         btnSignUp?.setOnClickListener {
+            if (etUserFirstName.text.isEmpty()) {
+                Toast.makeText(activity, "Please provide your first name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (etUserLastName.text.isEmpty()) {
+                Toast.makeText(activity, "Please provide your last name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (etUserEmail.text.isEmpty()) {
+                Toast.makeText(activity, "Please provide your email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if (etUserPassword.text.isEmpty() || etUserPassword.text.length < 4) {
+                Toast.makeText(activity, "Please provide a longer password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val userName = "${etUserFirstName.text} ${etUserLastName.text}"
             val userMail = etUserEmail.text.toString()
             val userPass = etUserPassword.text.toString()
             val user = tblUser(UserName= userName, UserMail = userMail, UserPass = userPass)
+
             compositeDisposable.addAll(iApi.registerUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,15 +71,6 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                         }
                     }
                     Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
-
-//                    val sharedPreferences = requireActivity().applicationContext.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
-//                    with(sharedPreferences.edit()) {
-//                        putString("userName", userName)
-//                        putString("userMail", userMail)
-//                        commit()
-//                    }
-
-                    //startActivity(Intent(context, MainActivity::class.java))
                 },
                 {t: Throwable? ->
                     Toast.makeText(activity, t!!.message, Toast.LENGTH_SHORT).show()
