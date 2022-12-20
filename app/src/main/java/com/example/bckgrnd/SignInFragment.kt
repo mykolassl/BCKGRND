@@ -56,9 +56,12 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                         with(sharedPreferences.edit()) {
                             putString("userName", s.UserName)
                             putString("userMail", s.UserMail)
-                            s.id?.let { it1 -> putInt("id", it1) }
+                            putInt("id", s.ID!!)
+                            Log.i("MESSAGE", s.ID.toString())
                             commit()
                         }
+
+                        Log.i("MESSAGE", sharedPreferences.getInt("id", -1).toString())
 
                         activity?.finish()
                         Toast.makeText(activity, "Logged in successfully", Toast.LENGTH_SHORT).show()

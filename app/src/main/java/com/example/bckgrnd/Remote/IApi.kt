@@ -18,9 +18,15 @@ interface IApi {
     fun loginUser(@Body user: tblUser): Observable<tblUser>
 
     @Headers("Connection: close")
+    @DELETE("api/Login/{id}")
+    fun deleteUser(@Path("id") id: Int): Observable<String>
+
+
+    @Headers("Connection: close")
     @POST("api/Location")
     fun addLocation(@Body location: tblLocation): Observable<String>
 
     @GET("api/Location/{requestString}")
     fun getPlaceInfo(@Path("requestString") requestString: String): Call<Array<tblLocationResponse>>
+
 }

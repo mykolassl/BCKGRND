@@ -5,7 +5,7 @@ class tblUser(
     var UserMail:String? = null,
     var UserPass:String? = null,
     var Salt: String? = "",
-    var id: Int? = -1,
+    var ID: Int? = -1,
 ) {
 
 }
