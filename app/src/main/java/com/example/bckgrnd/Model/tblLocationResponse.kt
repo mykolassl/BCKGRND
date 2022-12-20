@@ -1,6 +1,7 @@
 package com.example.bckgrnd.Model
 
 class tblLocationResponse(
+    var ID: String? = null,
     var Name: String? = null,
     var Description: String? = null,
     var Latitude: Float? = null,

@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.example.bckgrnd.Model.tblUser
 import com.example.bckgrnd.Remote.IApi
 import com.example.bckgrnd.Remote.RetroFitClient
@@ -44,18 +46,25 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({s ->
                     if(s.contains("successfully")) {
-                        activity?.finish()
-                    }
+                        parentFragmentManager.commit {
+                            replace<SignInFragment>(R.id.fragment_sign_in_view)
+                            setReorderingAllowed(true)
+                            addToBackStack("com.example.bckgrnd.SignUpFragment")
 
-                    val sharedPreferences = requireActivity().applicationContext.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
-                    with(sharedPreferences.edit()) {
-                        putString("userName", userName)
-                        putString("userMail", userMail)
-                        commit()
+                            val fragment = parentFragmentManager.findFragmentById(R.id.fragment_sign_up_view) as SignUpFragment
+                            detach(fragment)
+                        }
                     }
-
                     Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(context, MainActivity::class.java))
+
+//                    val sharedPreferences = requireActivity().applicationContext.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+//                    with(sharedPreferences.edit()) {
+//                        putString("userName", userName)
+//                        putString("userMail", userMail)
+//                        commit()
+//                    }
+
+                    //startActivity(Intent(context, MainActivity::class.java))
                 },
                 {t: Throwable? ->
                     Toast.makeText(activity, t!!.message, Toast.LENGTH_SHORT).show()

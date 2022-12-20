@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 class SearchResultAdapter(
     var resultXIDs: List<String?>,
     var resultNames: List<String>,
+    var resultDBIDs: List<String>,
     var ctx: Context
 ): RecyclerView.Adapter<SearchResultAdapter.PlaceViewHolder>() {
     inner class PlaceViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
@@ -24,6 +25,7 @@ class SearchResultAdapter(
 
     override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) {
         holder.itemView.apply {
+            Log.i("MESSAGE", "ADAPTIORAS")
             val btnPlaceName = findViewById<Button>(R.id.btnVisitedPlace)
             btnPlaceName.text = resultNames[position]
             btnPlaceName.setOnClickListener {
@@ -31,6 +33,7 @@ class SearchResultAdapter(
                     val intent = Intent(ctx, PlaceInformationActivity::class.java)
                     intent.putExtra("xid", "-1")
                     intent.putExtra("name", resultNames[position])
+                    intent.putExtra("dbID", resultDBIDs[position - resultXIDs.size])
                     Log.i("MESSAGE", "Daugiau")
                     ctx.startActivity(intent)
                 } else {

@@ -56,6 +56,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                         with(sharedPreferences.edit()) {
                             putString("userName", s.UserName)
                             putString("userMail", s.UserMail)
+                            s.id?.let { it1 -> putInt("id", it1) }
                             commit()
                         }
 

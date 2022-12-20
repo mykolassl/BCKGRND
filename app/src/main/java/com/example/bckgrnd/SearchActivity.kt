@@ -22,7 +22,6 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val query = intent.extras!!.getString("searchQuery")
-        Log.i("MESSAGE", "kveris $query")
 
         val allPlacesJSON = AllPlaces().getPlaces()
         val parsed = Klaxon().parseJsonObject(StringReader(allPlacesJSON))
@@ -34,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
             }
         val placesXIDs = mutableListOf<String>()
         val placesNames = mutableListOf<String>()
+        val placesDBIDs = mutableListOf<String>()
         featuresArray?.forEach { e ->
             if (e.name.contains(query!!)) {
                 placesXIDs += e.xid
@@ -42,27 +42,32 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val iApi = RetroFitClient.getInstance().create(IApi::class.java)
+        Log.i("MESSAGE", "Step 1")
         val dbRequest = iApi.getPlaceInfo("name $query")
+        Log.i("MESSAGE", "Step 2")
         dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
             override fun onResponse(call: Call<Array<tblLocationResponse>>, response: Response<Array<tblLocationResponse>>) {
+                Log.i("MESSAGE", "Step 3")
                 val res = Klaxon().toJsonString(response.body()).trimIndent()
                 val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))
                 parsedResponse?.forEach {
-                    it.Name?.let { it1 -> Log.i("MESSAGE", it1) }
                     placesNames.add(it.Name!!)
+                    placesDBIDs.add(it.ID!!)
                 }
+
+                displaySearchResults(placesXIDs, placesNames, placesDBIDs)
             }
 
             override fun onFailure(call: Call<Array<tblLocationResponse>>, t: Throwable) {
-                Toast.makeText(this@SearchActivity,
-                    "Couldn't fetch data from our database, please try again.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                displaySearchResults(placesXIDs, placesNames, placesDBIDs)
             }
         })
+        Log.i("MESSAGE", "Step 4")
+    }
 
+    private fun displaySearchResults(xids: List<String>, names: List<String>, dbids: List<String>) {
         val rvResults = findViewById<RecyclerView>(R.id.rvSearchResults)
-        val adapter = SearchResultAdapter(placesXIDs, placesNames, this@SearchActivity)
+        val adapter = SearchResultAdapter(xids, names, dbids, this@SearchActivity)
         rvResults.adapter = adapter
         rvResults.layoutManager = LinearLayoutManager(this)
     }

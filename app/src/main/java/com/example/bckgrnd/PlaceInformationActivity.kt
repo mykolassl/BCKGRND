@@ -42,11 +42,7 @@ class PlaceInformationActivity : AppCompatActivity() {
         PLACE_XID = intent.getStringExtra("xid") ?: ""
         PLACE_DBID = intent.getStringExtra("dbID") ?: ""
 
-        Log.i("MESSAGE", PLACE_XID)
-
         if (PLACE_XID != "-1") {
-            Log.i("MESSAGE", "Request to API")
-
             val infoRequest = placeApi.getInfo(intent.getStringExtra("xid") ?: "", apiKey)
 
             infoRequest.enqueue(object : Callback<placeInfo> {
@@ -78,13 +74,12 @@ class PlaceInformationActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<placeInfo>, t: Throwable) {
                     Toast.makeText(
                         this@PlaceInformationActivity,
-                        "Couldn't fetch data, please try again.",
+                        "Couldn't fetch data about this place, please try again.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             })
         } else {
-            Log.i("MESSAGE", "Request to db")
             val dbRequest = iApi.getPlaceInfo("id ${intent.extras?.getString("dbID")}")
 
             dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
@@ -157,8 +152,6 @@ class PlaceInformationActivity : AppCompatActivity() {
                         "data": [${Klaxon().toJsonObject(newPlace)}]
                     }    
                     """.trimIndent()
-
-                Log.i("MESSAGE", visitedPlacesJSON)
 
                 sharedPrefs.edit().putString("visitedPlacesJson", visitedPlacesJSON).commit()
             }
