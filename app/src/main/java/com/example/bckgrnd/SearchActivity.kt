@@ -42,12 +42,9 @@ class SearchActivity : AppCompatActivity() {
         }
 
         val iApi = RetroFitClient.getInstance().create(IApi::class.java)
-        Log.i("MESSAGE", "Step 1")
         val dbRequest = iApi.getPlaceInfo("name $query")
-        Log.i("MESSAGE", "Step 2")
         dbRequest.enqueue(object : Callback<Array<tblLocationResponse>> {
             override fun onResponse(call: Call<Array<tblLocationResponse>>, response: Response<Array<tblLocationResponse>>) {
-                Log.i("MESSAGE", "Step 3")
                 val res = Klaxon().toJsonString(response.body()).trimIndent()
                 val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))
                 parsedResponse?.forEach {
@@ -62,7 +59,6 @@ class SearchActivity : AppCompatActivity() {
                 displaySearchResults(placesXIDs, placesNames, placesDBIDs)
             }
         })
-        Log.i("MESSAGE", "Step 4")
     }
 
     private fun displaySearchResults(xids: List<String>, names: List<String>, dbids: List<String>) {

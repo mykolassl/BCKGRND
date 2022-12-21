@@ -23,7 +23,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         startActivity(Intent(this@AuthActivity, MainActivity::class.java))
 
         val sharedPrefs = this.getSharedPreferences("isLogged", Context.MODE_PRIVATE) ?: return

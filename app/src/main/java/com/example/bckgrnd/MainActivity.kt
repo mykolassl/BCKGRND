@@ -227,7 +227,10 @@ class MainActivity : AppCompatActivity(), LocationListener {
         // Navigation button click logic
         val btnProximity = findViewById<Button>(R.id.btnProximity)
         btnProximity.setOnClickListener {
-            startActivity(Intent(this@MainActivity, PlacesActivity::class.java))
+            val intent = Intent(this@MainActivity, PlacesActivity::class.java)
+            intent.putExtra("longitude", longitude)
+            intent.putExtra("latitude", latitude)
+            startActivity(intent)
         }
 
         val btnVisitedPlaces = findViewById<Button>(R.id.btnVisited)
@@ -244,7 +247,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
     override fun onLocationChanged(location: Location) {
         longitude = location.longitude
         latitude = location.latitude
-        Log.i("MESSAGE", "${longitude.toString()} ${latitude.toString()}")
     }
 
     override fun onPause() {
