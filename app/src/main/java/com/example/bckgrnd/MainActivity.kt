@@ -7,16 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.beust.klaxon.Klaxon
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.arcgisservices.LabelDefinition
 import com.esri.arcgisruntime.data.ServiceFeatureTable
@@ -29,13 +30,15 @@ import com.esri.arcgisruntime.mapping.view.*
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 import com.esri.arcgisruntime.symbology.SimpleRenderer
 import com.esri.arcgisruntime.symbology.TextSymbol
-import com.example.bckgrnd.AllPlaces.AllPlaces
 import com.example.bckgrnd.databinding.ActivityMainBinding
-import java.io.StringReader
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LocationListener {
+    private lateinit var locationManager: LocationManager
+    private var longitude: Double? = null
+    private var latitude: Double? = null
+
     private val activityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -87,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             // if LocationDisplay isn't started or has an error
             if (!it.isStarted && it.error != null) {
                 // check permissions to see if failure may be due to lack of permissions
-                requestPermissions(it)
+                requestPermissions()
             }
         }
 
@@ -113,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         return LabelDefinition(labelExpression, labelTextSymbol)
     }
 
-    private fun requestPermissions(dataSourceStatusChangedEvent: LocationDisplay.DataSourceStatusChangedEvent) {
+    private fun requestPermissions() {
         val requestCode = 2
         val reqPermissions = arrayOf(
             ACCESS_FINE_LOCATION,
@@ -132,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -139,8 +143,11 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // if request is cancelled, the results array is empty
+
+        Log.i("MESSAGE", "Changed perms")
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             locationDisplay.startAsync()
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0f, this)
         } else {
             Toast.makeText(
                 this@MainActivity,
@@ -166,6 +173,14 @@ class MainActivity : AppCompatActivity() {
         setupMap()
 
         setContentView(activityMainBinding.root)
+
+        // Checking user's location
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(this@MainActivity, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions()
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 0f, this)
+        }
 
         // Search text field logic
         val etSearch = findViewById<EditText>(R.id.etSearch)
@@ -210,10 +225,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Navigation button click logic
-//        val btnPlacesToVisit = findViewById<Button>(R.id.btnPlaces)
-//        btnPlacesToVisit.setOnClickListener {
-//            startActivity(Intent(this@MainActivity, PlacesActivity::class.java))
-//        }
+        val btnProximity = findViewById<Button>(R.id.btnProximity)
+        btnProximity.setOnClickListener {
+            startActivity(Intent(this@MainActivity, PlacesActivity::class.java))
+        }
 
         val btnVisitedPlaces = findViewById<Button>(R.id.btnVisited)
         btnVisitedPlaces.setOnClickListener {
@@ -224,6 +239,12 @@ class MainActivity : AppCompatActivity() {
         btnAttractions.setOnClickListener {
             startActivity(Intent(this@MainActivity, AttractionsActivity::class.java))
         }
+    }
+
+    override fun onLocationChanged(location: Location) {
+        longitude = location.longitude
+        latitude = location.latitude
+        Log.i("MESSAGE", "${longitude.toString()} ${latitude.toString()}")
     }
 
     override fun onPause() {

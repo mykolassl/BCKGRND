@@ -112,7 +112,7 @@ class PlaceInformationActivity : AppCompatActivity() {
         ivSetVisited.setOnClickListener {
             val sharedPrefs = applicationContext.getSharedPreferences("visitedPlacesJson", Context.MODE_PRIVATE)
 
-            if(sharedPrefs.getString("visitedPlacesJson", "") != "") {
+            if(sharedPrefs.getString("visitedPlacesJson", "")?.isNotEmpty() == true) {
                 // Check if clicked place exists in the JSON string. If exists remove it, else add it
                 val visitedPlacesJSON = sharedPrefs.getString("visitedPlacesJson", "")!!.trimIndent()
                 val parsedPlaces = Klaxon().parseJsonObject(StringReader(visitedPlacesJSON))
@@ -149,7 +149,7 @@ class PlaceInformationActivity : AppCompatActivity() {
                 val visitedPlacesJSON =
                     """
                     {
-                        "data": [${Klaxon().toJsonObject(newPlace)}]
+                        "data": [${Klaxon().toJsonString(newPlace)}]
                     }    
                     """.trimIndent()
 
