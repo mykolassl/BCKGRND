@@ -21,6 +21,10 @@ interface IApi {
     @DELETE("api/Login/{id}")
     fun deleteUser(@Path("id") id: Int): Observable<String>
 
+    @Headers("Connection: close")
+    @PUT("api/Login/{id}/{newPass}")
+    fun changePassword(@Path("id") id: Int, @Path("newPass") newPass: String, @Body user: tblUser): Observable<tblUser>
+
 
     @Headers("Connection: close")
     @POST("api/Location")

@@ -191,9 +191,10 @@ class MainActivity : AppCompatActivity(), LocationListener {
         }
 
         // Menu button click logic
+        val menu = findViewById<ConstraintLayout>(R.id.viewBurger)
+
         val btnBurgerMenu = findViewById<ImageView>(R.id.ivBurger)
         btnBurgerMenu.setOnClickListener {
-            val menu = findViewById<ConstraintLayout>(R.id.viewBurger)
             menu.visibility = View.VISIBLE
         }
 
@@ -211,16 +212,17 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val btnProfile = findViewById<Button>(R.id.btnProfile)
         btnProfile.setOnClickListener {
             startActivity(Intent(this, UserProfileActivity::class.java))
+            menu.visibility = View.GONE
         }
 
         val btnUpload = findViewById<Button>(R.id.btnUpload)
         btnUpload.setOnClickListener {
             startActivity(Intent(this, UploadActivity::class.java))
+            menu.visibility = View.GONE
         }
 
         val btnCloseMenu = findViewById<ImageView>(R.id.ivCloseMenu)
         btnCloseMenu.setOnClickListener {
-            val menu = findViewById<ConstraintLayout>(R.id.viewBurger)
             menu.visibility = View.GONE
         }
 
