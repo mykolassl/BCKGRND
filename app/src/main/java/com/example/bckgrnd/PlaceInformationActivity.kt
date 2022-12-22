@@ -52,6 +52,12 @@ class PlaceInformationActivity : AppCompatActivity() {
 
                     PLACE_NAME = parsedResponse.string("name") ?: ""
 
+                    val ivSavePlace = findViewById<ImageView>(R.id.ivHeart)
+                    if (isSaved("savedPlacesJson")) {
+                        ivSavePlace.tag = "Filled"
+                        ivSavePlace.setImageResource(R.drawable.iconheartred)
+                    }
+
                     val wikipediaObject = parsedResponse.obj("wikipedia_extracts")
                     val placeText =
                         wikipediaObject?.let { Klaxon().parseFromJsonObject<WikipediaExtracts>(it) }
@@ -88,6 +94,12 @@ class PlaceInformationActivity : AppCompatActivity() {
                     val parsedResponse = Klaxon().parseArray<tblLocationResponse>(StringReader(res))?.get(0)
 
                     PLACE_NAME = parsedResponse?.Name ?: ""
+
+                    val ivSavePlace = findViewById<ImageView>(R.id.ivHeart)
+                    if (isSaved("savedPlacesJson")) {
+                        ivSavePlace.tag = "Filled"
+                        ivSavePlace.setImageResource(R.drawable.iconheartred)
+                    }
 
                     val placeText = parsedResponse?.Description
                     val tvPlaceInfo = findViewById<TextView>(R.id.tvPlaceInfo)
@@ -157,17 +169,84 @@ class PlaceInformationActivity : AppCompatActivity() {
             }
         }
 
+        val sharedSavedPlaces = applicationContext.getSharedPreferences("savedPlacesJson", Context.MODE_PRIVATE)
+
         val ivSavePlace = findViewById<ImageView>(R.id.ivHeart)
         ivSavePlace.setOnClickListener {
+            if (sharedSavedPlaces.getString("savedPlacesJson", "")?.isNotEmpty() == true) {
+                // Check if clicked place exists in the JSON string. If exists remove it, else add it
+                val savedPlacesJSON = sharedSavedPlaces.getString("savedPlacesJson", "")!!.trimIndent()
+                val parsedPlaces = Klaxon().parseJsonObject(StringReader(savedPlacesJSON))
+                val placesArray = parsedPlaces.array<Place>("data")!!.let { Klaxon().parseFromJsonArray<Place>(it) }
+                    ?.toMutableList()
+
+                // Check if name of the place exists in saved places JSON
+                var isSaved = false
+                placesArray!!.forEach { e ->
+                    if (e.placeName == PLACE_NAME) {
+                        isSaved = true
+                    }
+                }
+
+                if(isSaved) {
+                    val foundPlaceObj = placesArray.find { e -> e.placeName == PLACE_NAME } as Place
+                    placesArray -= foundPlaceObj
+                    Toast.makeText(this, "$PLACE_NAME was removed from your saved places list.", Toast.LENGTH_LONG).show()
+                } else {
+                    val newPlace = Place(PLACE_XID, PLACE_NAME, if(PLACE_XID == "-1") PLACE_DBID else "")
+                    placesArray += newPlace
+                    Toast.makeText(this, "$PLACE_NAME was added to your saved places list.", Toast.LENGTH_LONG).show()
+                }
+
+                val updatedSavedPlacesJSON = """
+                        {
+                            "data": ${Klaxon().toJsonString(placesArray)}
+                        }
+                    """.trimIndent()
+
+                sharedSavedPlaces.edit().putString("savedPlacesJson", updatedSavedPlacesJSON).commit()
+            } else {
+                val newPlace = Place(PLACE_XID, PLACE_NAME, if(PLACE_XID == "-1") PLACE_DBID else "")
+                val savedPlacesJSON =
+                    """
+                    {
+                        "data": [${Klaxon().toJsonString(newPlace)}]
+                    }    
+                    """.trimIndent()
+
+                Toast.makeText(this, "$PLACE_NAME was added to your saved places list.", Toast.LENGTH_LONG).show()
+                sharedSavedPlaces.edit().putString("savedPlacesJson", savedPlacesJSON).commit()
+            }
+
             if(ivSavePlace.tag == "Empty") {
                 ivSavePlace.tag = "Filled"
                 ivSavePlace.setImageResource(R.drawable.iconheartred)
-                Toast.makeText(this@PlaceInformationActivity, "Added to saved places.", Toast.LENGTH_SHORT).show()
             } else if(ivSavePlace.tag == "Filled") {
                 ivSavePlace.tag = "Empty"
                 ivSavePlace.setImageResource(R.drawable.iconheart)
-                Toast.makeText(this@PlaceInformationActivity, "Removed from saved places.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun isSaved(name: String): Boolean {
+        Log.i("MESSAGE", "IS SAVED RUNIN")
+        val sharedSavedPlaces = applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE)
+        val savedPlacesJSON = sharedSavedPlaces.getString(name, "")!!.trimIndent()
+        var isSaved = false
+
+        if (savedPlacesJSON != "") {
+            val parsedPlaces = Klaxon().parseJsonObject(StringReader(savedPlacesJSON))
+            val placesArray = parsedPlaces.array<Place>("data")!!.let { Klaxon().parseFromJsonArray<Place>(it) }
+                ?.toMutableList()
+
+            // Check if name of the place exists in saved places JSON
+            placesArray!!.forEach { e ->
+                if (e.placeName == PLACE_NAME) {
+                    isSaved = true
+                }
+            }
+        }
+
+        return isSaved
     }
 }
