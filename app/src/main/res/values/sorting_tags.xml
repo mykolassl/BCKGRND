@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tags_array">
+        <item>None</item>
+        <item>Religion</item>
+        <item>Palaces</item>
+        <item>Cultural</item>
+        <item>Historic</item>
+        <item>Natural</item>
+        <item>Fountains</item>
+    </string-array>
+</resources>
