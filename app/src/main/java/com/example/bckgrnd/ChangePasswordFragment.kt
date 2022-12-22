@@ -37,7 +37,9 @@ class ChangePasswordFragment : Fragment(R.layout.fragment_change_password) {
         val btnSubmit = view.findViewById<Button>(R.id.btnSave)
 
         btnSubmit.setOnClickListener {
-            if (etNewPass.text.toString() != etNewPassRepeat.text.toString()) {
+            if (etNewPass.text.length < 4) {
+                Toast.makeText(activity, "Your new password is too short", Toast.LENGTH_SHORT).show()
+            } else if (etNewPass.text.toString() != etNewPassRepeat.text.toString()) {
                 Toast.makeText(activity, "Your new passwords don't match", Toast.LENGTH_SHORT).show()
             } else {
                 val sharedPreferences = requireActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE)
