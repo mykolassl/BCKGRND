@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/imageButton"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -39,7 +39,6 @@
         android:textColor="@color/black"
         android:textSize="12sp"
         app:cornerRadius="100dp"
-        app:iconTint="#E4CCA5"
         app:layout_constraintStart_toStartOf="@+id/imageButton"
         app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
@@ -112,7 +111,7 @@
 
     <Button
         android:id="@+id/button8"
-        android:layout_width="187dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="268dp"
         android:backgroundTint="#B3A692"
@@ -129,7 +128,7 @@
 
     <Button
         android:id="@+id/button7"
-        android:layout_width="187dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#B3A692"
@@ -146,7 +145,7 @@
 
     <Button
         android:id="@+id/button6"
-        android:layout_width="187dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#B3A692"
